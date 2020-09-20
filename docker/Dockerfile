@@ -9,7 +9,7 @@ RUN apt-get update && \
         # update pip
         
 RUN python3.6 -m pip install pip --upgrade && \
-    python3.6 -m pip install numpy scipy scikit-learn matplotlib cycler pyyaml pyparsing pandas
+    python3.6 -m pip install numpy scipy==1.2.1 scikit-learn matplotlib cycler pyyaml pyparsing pandas
 RUN python3.6 -m pip install pip --upgrade && \
     python3.6 -m pip install tensorflow h5py 
 RUN python3.6 -m pip install opencv-python &&\ 
