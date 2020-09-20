@@ -68,6 +68,7 @@ for face_coordinates in faces:
     # prediction
     predicted_class = np.argmax(model.predict(gray_face))
     label_text = labels[predicted_class]
+    print(label_text)
 
     gradient_function = compile_gradient_function(model,
                             predicted_class, 'conv2d_7')

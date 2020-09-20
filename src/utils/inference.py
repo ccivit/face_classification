@@ -3,8 +3,18 @@ import matplotlib.pyplot as plt
 import numpy as np
 from keras.preprocessing import image
 
+# def load_image(image_path, grayscale=False, color_mode='rgb', target_size=None):
+#     # pil_image = image.load_img(image_path, grayscale, target_size)
+#     pil_image = image.load_img(image_path, color_mode = color_mode, target_size = target_size)
+#     return image.img_to_array(pil_image)
+
 def load_image(image_path, grayscale=False, target_size=None):
-    pil_image = image.load_img(image_path, grayscale, target_size)
+    color_mode = 'grayscale'
+    if grayscale == False:
+        color_mode = 'rgb'
+    else:
+        grayscale = False
+    pil_image = image.load_img(image_path, grayscale, color_mode, target_size)
     return image.img_to_array(pil_image)
 
 def load_detection_model(model_path):
@@ -34,4 +44,3 @@ def get_colors(num_classes):
     colors = plt.cm.hsv(np.linspace(0, 1, num_classes)).tolist()
     colors = np.asarray(colors) * 255
     return colors
-
