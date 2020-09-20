@@ -1,4 +1,5 @@
-FROM nvidia/cuda:9.0-cudnn7-runtime-ubuntu16.04
+# FROM nvidia/cuda:9.0-cudnn7-runtime-ubuntu16.04
+FROM nvidia/cuda:11.0-base
 RUN apt-get update && \
         apt-get install -y software-properties-common && \
         add-apt-repository ppa:deadsnakes/ppa && \
