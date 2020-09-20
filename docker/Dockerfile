@@ -9,7 +9,7 @@ RUN apt-get update && \
         # update pip
         
 RUN python3.6 -m pip install pip --upgrade && \
-    python3.6 -m pip install numpy scipy scikit-learn pillow matplotlib cycler pyyaml pyparsing pandas
+    python3.6 -m pip install numpy scipy scikit-learn matplotlib cycler pyyaml pyparsing pandas
 RUN python3.6 -m pip install pip --upgrade && \
     python3.6 -m pip install tensorflow h5py 
 RUN python3.6 -m pip install opencv-python &&\ 
@@ -18,7 +18,7 @@ RUN python3.6 -m pip install opencv-python &&\
     apt update && apt install -y libgl1-mesa-glx
     
 RUN python3.6 -m pip install pip --upgrade && \
-    python3.6 -m pip install keras statistics pillow
+    python3.6 -m pip install keras statistics pillow PIL
    
     
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.6 1
