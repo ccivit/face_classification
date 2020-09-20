@@ -11,7 +11,10 @@ RUN apt-get update && \
 RUN python3.6 -m pip install pip --upgrade && \
     python3.6 -m pip install numpy scipy scikit-learn pillow matplotlib cycler pyyaml pyparsing pandas
 RUN python3.6 -m pip install pip --upgrade && \
-    python3.6 -m pip install tensorflow h5py opencv-python==3.4.2.17
+    python3.6 -m pip install tensorflow h5py 
+RUN python3.6 -m pip install opencv-python &&\ 
+    apt update && apt install -y libsm6 libxext6 &&\
+    apt-get install -y libxrender-dev
     
 RUN python3.6 -m pip install pip --upgrade && \
     python3.6 -m pip install keras statistics 
