@@ -15,6 +15,8 @@ RUN python3.6 -m pip install pip --upgrade && \
 RUN python3.6 -m pip install opencv-python &&\ 
     apt update && apt install -y libsm6 libxext6 &&\
     apt-get install -y libxrender-dev
+    apt update && \
+    apt install libgl1-mesa-glx
     
 RUN python3.6 -m pip install pip --upgrade && \
     python3.6 -m pip install keras statistics 
