@@ -8,7 +8,7 @@ RUN apt-get update && \
         # update pip
 RUN python3.6 -m pip install pip --upgrade && \
     python3.6 -m pip install numpy scipy scikit-learn pillow tensorflow pandas h5py opencv-python==3.4.2.17 \
-    python3.6 -m pip keras statistics pyyaml pyparsing cycler matplotlib Flask
+    python3.6 -m pip install keras statistics pyyaml pyparsing cycler matplotlib Flask
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.6 1
 
 WORKDIR /data_project
