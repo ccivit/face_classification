@@ -10,6 +10,6 @@ RUN python3.6 -m pip install pip --upgrade && \
     python3.6 -m pip install matplotlib pillow
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.6 1
 
-WORKDIR /my_project
+WORKDIR /data_project
 
 ENTRYPOINT ["/bin/bash"]
