@@ -17,9 +17,11 @@ RUN python3.6 -m pip install opencv-python &&\
     apt update && apt install -y libgl1-mesa-glx
     
 RUN python3.6 -m pip install pip --upgrade && \
-    python3.6 -m pip install keras statistics pillow
+    python3.6 -m pip install keras statistics pillow imageio scikit-image
    
     
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.6 1
 
 WORKDIR /data_project/src
+
+ENTRYPOINT ["python", "image_emotion_gender_demo.py"]
