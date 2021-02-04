@@ -3,6 +3,7 @@ import os
 import cv2
 from keras.models import load_model
 import numpy as np
+import yaml
 
 from utils.datasets import get_labels
 from utils.inference import detect_faces
@@ -21,14 +22,49 @@ def is_image(path):
     except IOError:
         return False
 
+def save_results(preds,img_name,img_path,config):
+    pipeline_dir = config['general']['pipeline_path']
+    results_filename = config['face_classification']['results']
+    docker_workdir = config['face_classification']['workdir']
+    cleaned_results = preds
+    # for item in decode_predictions(preds,top=5)[0]:
+    #     cleaned_results[str(item[1])] = float(item[2])
+    # print(cleaned_results)
+    img_name = remove_file_extension(img_name)
+    print(img_name)
+    img_dir_wo_parent = get_path_wo_top_parent_dirs(img_path)
+    print(img_dir_wo_parent)
+    pipeline_path = os.path.join(pipeline_dir,img_dir_wo_parent,img_name)
+    print(pipeline_path)
+    results_filepath = os.path.join(docker_workdir,pipeline_path,results_filename)
+    print(results_filepath)
+    print('********************************')
+    yaml.dump(cleaned_results, open(results_filepath, "w"), default_flow_style=False)
+    return None
+
+def remove_file_extension(file_name):
+    return '.'.join(file_name.split('.')[:-1])
+
+def get_path_wo_top_parent_dirs(file_path):
+    # return file_path
+    return '/'.join(file_path.split('/')[-3:])
+
+
 # parameters for loading data and images
 # image_path = sys.argv[1]
 input_dir =  sys.argv[1]
+config_file = sys.argv[2]
+with open(config_file, 'r') as stream:
+    config = yaml.safe_load(stream)
 print('Performing face detection for',input_dir)
 # results_dir = sys.argv[2]
-detection_model_path = '../trained_models/detection_models/haarcascade_frontalface_default.xml'
-emotion_model_path = '../trained_models/emotion_models/fer2013_mini_XCEPTION.102-0.66.hdf5'
-gender_model_path = '../trained_models/gender_models/simple_CNN.81-0.96.hdf5'
+# detection_model_path = '../trained_models/detection_models/haarcascade_frontalface_default.xml'
+# emotion_model_path = '../trained_models/emotion_models/fer2013_mini_XCEPTION.102-0.66.hdf5'
+# gender_model_path = '../trained_models/gender_models/simple_CNN.81-0.96.hdf5'
+detection_model_path = config['face_classification']['detection_model_path']
+emotion_model_path = config['face_classification']['emotion_model_path']
+gender_model_path = config['face_classification']['gender_model_path']
+
 emotion_labels = get_labels('fer2013')
 gender_labels = get_labels('imdb')
 font = cv2.FONT_HERSHEY_SIMPLEX
@@ -48,6 +84,8 @@ gender_classifier = load_model(gender_model_path, compile=False)
 emotion_target_size = emotion_classifier.input_shape[1:3]
 gender_target_size = gender_classifier.input_shape[1:3]
 
+
+
 for image in os.listdir(input_dir):
 
     # loading images
@@ -61,7 +99,8 @@ for image in os.listdir(input_dir):
     gray_image = gray_image.astype('uint8')
 
     faces = detect_faces(face_detection, gray_image)
-    for face_coordinates in faces:
+    results = {}
+    for i,face_coordinates in enumerate(faces):
         x1, x2, y1, y2 = apply_offsets(face_coordinates, gender_offsets)
         rgb_face = rgb_image[y1:y2, x1:x2]
 
@@ -91,10 +130,9 @@ for image in os.listdir(input_dir):
         else:
             color = (255, 0, 0)
 
-        draw_bounding_box(face_coordinates, rgb_image, color)
-        draw_text(face_coordinates, rgb_image, gender_text, color, 0, -20, 1, 2)
-        draw_text(face_coordinates, rgb_image, emotion_text, color, 0, -50, 1, 2)
-        print(gender_text)
-        print(emotion_text)
-    # bgr_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2BGR)
-    # cv2.imwrite('../images/predicted_test_image.png', bgr_image)
+        bounding_box_str = str(x1) +', ' + str(x2) +', ' + str(y1) +', ' + str(y2)
+        results['person_' + str(i+1)] = {'gender': gender_text,
+                                         'emotion': emotion_text,
+                                         'bounding_box': bounding_box_str}
+    print(results)
+    save_results(results,image,input_dir,config)
